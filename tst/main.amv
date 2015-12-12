@@ -1,0 +1,12 @@
+      READ R0
+      READ R1
+      STORE R0 A
+      STORE R1 B
+      LOAD R0 ZERO
+      LOAD R1 ZERO
+      CALL CALC
+      HALT
+   A: WORD 0
+   B: WORD 0
+ZERO: WORD 0
+      END

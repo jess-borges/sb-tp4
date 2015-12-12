@@ -1,0 +1,13 @@
+CALC: LOAD R5 A
+      LOAD R6 B
+      SUB R5 R6
+      JN MB
+  MA: LOAD R7 A
+      JMP OK 
+  MB: LOAD R7 B
+  OK: WRITE R5
+      WRITE R6
+      WRITE R7
+      RET
+      END
+

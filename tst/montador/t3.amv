@@ -1,0 +1,59 @@
+; Exponenciação
+LOAD R0 A
+LOAD R1 B
+READ R2
+READ R3
+
+
+
+CALL POW
+WRITE R10
+
+
+HALT
+POW:
+ADD R3 R0
+JZ PZERO
+COPY R5 R2
+COPY R6 R2
+
+PNZERO:
+SUB R3 R1
+JZ FIMP
+CALL MULT
+COPY R5 R10
+COPY R6 R2
+JMP PNZERO
+
+FIMP: RET
+
+PZERO:
+COPY R10 R1
+JMP FIMP
+
+
+
+MULT:      ; multiplica R5 por R5 e salva em R10
+COPY R10 R0
+
+ADD R5 R0  ; verifica se está multiplicando 0
+JZ FIMM
+ADD R6 R0
+JZ FIMM
+
+MNZERO:
+SUB R6 R1
+JN FIMM
+ADD R10 R5
+JMP MNZERO
+
+FIMM: RET
+
+
+
+
+
+
+
+A: WORD 0
+B: WORD 1
