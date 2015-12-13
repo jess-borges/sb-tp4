@@ -57,6 +57,8 @@
 
 short searchLabel (char *string, int str_size, TipoLista st, int *address);
 short defineLabel(char *string, int str_size, TipoLista *st, int address);
+short isUndefinedLabel(TranslatedInstructions code, TipoLista st, int pc);
+short writeUndefinedLabel (int address, TipoLista st, FILE **file);
 
 void translate(char *in_file, char *out_file, short verbose, short linker);
 void firstStep(char *in_file, TipoLista *st);

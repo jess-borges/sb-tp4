@@ -23,13 +23,6 @@ short searchLabel (char *string, int str_size, TipoLista st, int *address){
     return FALSE;
 }
 
-void addUndefinedLabel(char *string, int str_size, TipoLista *st){
-    Label label;
-    copyLabelName(&label, string, str_size);
-    label.defined = FALSE;
-    Insere(label, st);
-}
-
 short defineLabel(char *string, int str_size, TipoLista *st, int address){
     Label label;
     ApontadorL ap = st->primeiro;
@@ -56,6 +49,47 @@ short defineLabel(char *string, int str_size, TipoLista *st, int address){
     label.defined = TRUE;
     Insere(label, st);
     return 0;
+}
+
+void addUndefinedLabel(char *string, int str_size, TipoLista *st, TranslatedInstructions *code, int pc){
+    Label label;
+    copyLabelName(&label, string, str_size);
+    label.defined = FALSE;
+    label.address = pc;
+    Insere(label, st);
+    code->undefinedLabels[code->ulsize] = pc;
+    code->ulsize++;
+    if (code->ulsize >= code->ulallocated){
+        code->ulallocated += code->block_size;
+        code->undefinedLabels = (int *) realloc(code->undefinedLabels, code->ulallocated*sizeof(int));
+    }
+}
+
+short isUndefinedLabel(TranslatedInstructions code, TipoLista st, int pc){
+    int i;
+    for (i = 0; i < code.ulsize; i++){
+        if (code.undefinedLabels[i] == pc){
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+short writeUndefinedLabel (int address, TipoLista st, FILE **file){
+    Label label;
+    ApontadorL ap = st.primeiro;
+    if (ap == NULL){
+        return FALSE;
+    }
+    while((ap != NULL) && !ListaVazia(st)){
+        label = ap->item;
+        if (label.address == address){
+            fprintf(*file, "%s\n", label.name);
+            return TRUE;
+        }
+        ap = ap->prox;
+    }
+    return FALSE;
 }
 
 /* Translation operations*/
@@ -243,9 +277,8 @@ int translatesWord(char *word, int wsize, TranslatedInstructions *code, TipoList
             return INSTRUCTION;
         }
         else{
-            addUndefinedLabel(word, wsize, &st);
-            n = n - pc - 1;
-            saveInListCode(code, n);
+            addUndefinedLabel(word, wsize, &st, code, pc);
+            saveInListCode(code, pc);
             return INSTRUCTION;
         }
     }
@@ -270,7 +303,14 @@ short printCode(char *out_file, TranslatedInstructions code, short linker, TipoL
         ImprimeEmArquivo(st, &file);
     }
     for (i = 0; i < code.size; i++){
-        fprintf(file, "%d\n", code.list[i]);
+        if (code.list[i] == i){
+            if (isUndefinedLabel(code, st, i)){
+                writeUndefinedLabel(i, st, &file);
+            }
+        }
+        else{
+            fprintf(file, "%d\n", code.list[i]);
+        }
     }
     fclose(file);
     return 1;
@@ -279,9 +319,12 @@ short printCode(char *out_file, TranslatedInstructions code, short linker, TipoL
 /* TranslatedInstructions operations */
 void StartISACode(TranslatedInstructions *code, int blockSize){
     code->allocated = blockSize;
+    code->ulallocated = blockSize;
     code->block_size = blockSize;
     code->list = (int *) malloc(code->allocated*sizeof(int));
     code->size = 0;
+    code->undefinedLabels = (int *) malloc(code->ulallocated*sizeof(int));
+    code->ulsize = 0;
 }
 
 void saveInListCode(TranslatedInstructions *code, int n){

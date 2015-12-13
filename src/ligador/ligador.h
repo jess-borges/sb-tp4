@@ -1,14 +1,15 @@
 #include <stdio.h>
+#include "lista.h"
 
-#ifndef FUNC_H
-#define FUNC_H
+#ifndef LIGADOR_H
+#define LIGADOR_H
+
+typedef struct {
+    TipoLista symbolTable;
+    TranslatedInstructions code;
+    int finalPC;
+} Module;
 
 
-//Variaveis globais
-int memory[1000];
-int reg[16];
-int PC;
-int SP;
-char PSW[2];
 
 #endif
