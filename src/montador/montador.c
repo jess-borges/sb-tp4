@@ -56,12 +56,9 @@ Label addUndefinedLabel(char *string, int str_size, TipoLista *st, TranslatedIns
 
     copyLabelName(&label, string, str_size);
     label.defined = FALSE; 
-    printf("\nadd %s", label.name);
     if (!searchLabel(label.name, label.name_size, *st, &address, &label)){
-        printf("\nnao achou [%s, %d]", label.name, label.name_size);
         Insere(label, st);
     }
-    Imprime (*st);
     return label;
 }
 
@@ -77,23 +74,6 @@ short isUndefinedLabel(TranslatedInstructions code, int pc){
 void writeUndefinedLabel(TranslatedInstructions code, int pc, FILE **file){
     fprintf(*file, "%s\n", code.undefinedLabels[pc].name);
 }
-/*
-short writeUndefinedLabel (int address, TipoLista st, FILE **file){
-    Label label;
-    ApontadorL ap = st.primeiro;
-    if (ap == NULL){
-        return FALSE;
-    }
-    while((ap != NULL) && !ListaVazia(st)){
-        label = ap->item;
-        if (label.address == address){
-            fprintf(*file, "%s\n", label.name);
-            return TRUE;
-        }
-        ap = ap->prox;
-    }
-    return FALSE;
-}*/
 
 /* Translation operations*/
 void translate(char *in_file, char *out_file, short verbose, short linker){
@@ -287,7 +267,6 @@ int translatesWord(char *word, int wsize, TranslatedInstructions *code, TipoList
         }
         else{
             label = addUndefinedLabel(word, wsize, st, code, pc);
-            /*printf("\n{%s %d}", word, wsize);*/
             saveInListCode(code, pc, TRUE, label);
             return INSTRUCTION;
         }
@@ -312,15 +291,7 @@ short printCode(char *out_file, TranslatedInstructions code, short linker, TipoL
     if (linker){
         ImprimeEmArquivo(st, &file);
         fprintf(file, "[%d]\n", code.size);
-    }
-    /*
-    printf("\n Undefined Labels: ");
-    for (i = 0; i < code.ulsize; i++){
-        if (code.undefinedLabels[i].name_size != 0)
-        printf("%s ", code.undefinedLabels[i].name);
-
-    }*/
-    Imprime(st);
+    }    
     for (i = 0; i < code.size; i++){
         if (code.list[i] == i){
             if (isUndefinedLabel(code, i)){
