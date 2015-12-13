@@ -301,6 +301,7 @@ short printCode(char *out_file, TranslatedInstructions code, short linker, TipoL
     }
     if (linker){
         ImprimeEmArquivo(st, &file);
+        fprintf(file, "[%d]\n", code.size);
     }
     for (i = 0; i < code.size; i++){
         if (code.list[i] == i){
