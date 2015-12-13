@@ -1,21 +1,24 @@
 #include "ligador.h"
 #include "lista.h"
+#include <string.h>
+#include <stdio.h>
 
 void link (Linker linker){
-    int i;
-
+    /*int i;
+    FILE *file;*/
     readTables(&linker);
     rearrangesTables(&linker);
     fillsUndefinedLabels(&linker);
+    write(linker);
 
-    printf("\nPrograma principal\n");
-    Imprime (linker.main.symbolTable);
-    printf("\nPC final: %d", linker.main.finalPC);
+    /*file = fopen("tabelas", "w");*/
+
+    /*printf("oi");*//*
+    ImprimeEmArquivo (linker.main.symbolTable, &file);
     for (i = 0; i < linker.size; i++){
-        printf("\nModulo %d\n", i+1);
-        Imprime (linker.moduleList[i].symbolTable);
-        printf("\nPC final: %d", linker.moduleList[i].finalPC);
+        ImprimeEmArquivo (linker.moduleList[i].symbolTable, &file);
     }
+    fclose(file);*/
 }
 
 short searchLabelInTable (char *string, int str_size, TipoLista st, int *address){
@@ -100,7 +103,9 @@ void readTable (Module *module){
         }
         if (c == ' '){
             label.name_size = i;            
-            copyLabelName(&label, word, i);
+            /*copyLabelName(&label, word, i);*/
+            label.name = (char *) malloc((i+5)*sizeof(char));
+            label.name = strncpy(label.name, word, i);
             /*printf("1[%s %d]%s  ", word, i, label.name);*/
         }
         i = 0;
@@ -125,14 +130,13 @@ void readTable (Module *module){
                 /*printf("  ");*/
                 label.defined = FALSE;
             }
-           /* c = getc(file); /* Reads '\n' */
+           /* c = getc(file);  Reads '\n' */
         }
         Insere(label, &module->symbolTable);
         c = getc(file);
     }
     c = getc(file); /* reads \n */
     c = getc(file);
-    printf("\n veio aqui -%c-", c);
     if (c == '['){
         i = 0;
         c = getc (file);
@@ -147,14 +151,11 @@ void readTable (Module *module){
         }
         if (c == ']'){
             module->finalPC = wordToInt(word, i);
-            printf("3[%s %d]%d", word, i, module->finalPC);
+            /*printf("3[%s %d]%d", word, i, module->finalPC);*/
         }
     }
     fclose(file);
     free(word);
-}
-
-void sumPCs(TipoLista *st, int pc){
 }
 
 void rearrangesTables (Linker *linker){
@@ -162,8 +163,7 @@ void rearrangesTables (Linker *linker){
     
     currentPC = linker->main.finalPC;
     for (i = 0; i < linker->size; i++){
-        sumPCs(&linker->moduleList[i].symbolTable, currentPC);
-        printf("soma");
+        IncrementaEnderecos(&linker->moduleList[i].symbolTable, currentPC);
         currentPC += linker->moduleList[i].finalPC;
     }
 }
@@ -173,7 +173,7 @@ void fillsTable (TipoLista *st, Linker linker){
     Label label;
     int address;
 
-    ap = st->primeiro;
+    ap = st->primeiro->prox;
     if (ap == NULL){
         return;
     }
@@ -197,11 +197,61 @@ void fillsUndefinedLabels (Linker *linker){
         fillsTable(&linker->moduleList[i].symbolTable, *linker);
     }
 }
+
 void write (Linker linker){
+    FILE *file;
+    int i;
 
+    file = fopen (linker.out_file, "w");
+    if (!file){
+        printf("\nHouve um problema na abertura do arquivo");
+        return;
+    }
+
+    writeModule(linker.main, &file);
+    for (i = 0; i < linker.size; i++){
+        writeModule(linker.moduleList[i], &file);
+    }
+    fclose(file);
 }
-void writeModule (Module module, FILE **file){
+void writeModule (Module module, FILE **out){
+    FILE *in;
+    char c, *word;
+    int i, allocated, address;
+    
 
+    in = fopen(module.fileName, "r");
+    if (!in){
+        printf("\nHouve um problema na abertura do arquivo");
+        return;
+    }
+    allocated = 10;
+    word = (char *) malloc(allocated*sizeof(char));
+    while (!feof(in) && c != ']'){ /* Reads informations of symbol table */
+        c = getc(in);
+    }
+    c = getc(in); /* Reads '\n' */
+    while (!feof(in)){
+        c = getc(in);
+        if (c >= 'A' && c <= 'Z'){
+            i = 0;
+            while (c != ' ' && c != '\n' && !feof(in)){
+                word[i] = c;
+                i++;
+                c = getc(in);
+                if (i >= allocated){
+                    allocated += 10;
+                    word = (char *) realloc(word, allocated*sizeof(char));
+                }
+            }
+            searchLabelInTable(word, i, module.symbolTable, &address);
+            fprintf(*out, "%d", address);
+        }
+        if (c == ' ' || c == '\n' || (c >= '0' && c <= '9'))
+            fprintf(*out, "%c", c);
+    }
+    free (word);
+    fclose(in);
 }
 
 short isEqual (char *str1, int str_size1, char *str2, int str_size2){
@@ -217,14 +267,19 @@ short isEqual (char *str1, int str_size1, char *str2, int str_size2){
     return 1;
 }
 
-void copyLabelName(Label *label, char *src, int size){
-    int i, allocated;
-    allocated = size + (BLOCK_SIZE - (size % BLOCK_SIZE));
-    label->name = (char *) malloc(allocated*sizeof(char));
+Label copyLabelName(char *src, int size){
+    int i;
+    Label label;
+    label.name = (char *) malloc(size*sizeof(char));
+    /*printf("\n%d{", size);*/
     for (i = 0; i < size; i++){
-        label->name[i] = src[i];
+        label.name[i] = src[i];
+      /*  printf("%c", label->name[i]);*/
     }
-    label->name_size = size;
+    label.name_size = size;
+
+    printf("{%s- %d}",  label.name, label.name_size);
+    return label;
 }
 
 

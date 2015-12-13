@@ -1,0 +1,90 @@
+
+void readTable (Module *module){
+    FILE *file;
+    char c, *word;
+    Label label;
+    int i, allocated;
+
+
+    FLVazia(&module->symbolTable);
+    allocated = 10;
+    word = (char *) malloc(allocated*sizeof(char));
+
+    file = fopen(module->fileName, "r");
+    if (!file){
+        printf("\nHouve um problema com o arquivo %s", module->fileName);
+        exit(0);
+    }
+
+    c = ' ';
+    while (!feof(file) && c != '{'){
+        c = getc(file);
+    }
+    c = getc(file); /* Reads '\n' */
+    c = getc(file);
+    while (!feof(file) && c != '}'){        
+        i = 0;
+        while (c != ' ' && c != '\n' && !feof(file)){
+            word[i] = c;
+            i++;
+            c = getc(file);
+            if (i >= allocated){
+                allocated += 10;
+                word = (char *) realloc(word, allocated*sizeof(char));
+            }
+        }
+        if (c == ' '){           
+            label = copyLabelName(word, i);
+            /*label.name = (char *) malloc((i+1)*sizeof(char));
+            label.name = strncpy(label.name, word, i);
+            printf("@%s@", strncpy(label.name, word, i));*/
+            label.name_size = i;
+            /*printf("1[%s %d]%s  ", word, i, label.name);*/
+        }
+        i = 0;
+        c = getc(file);
+        while (c != ' ' && c != '\n' && !feof(file)){
+            word[i] = c;
+            i++;
+            c = getc(file);
+            if (i >= allocated){
+                allocated += 10;
+                word = (char *) realloc(word, allocated*sizeof(char));
+            }
+        }
+        if (c == '\n'){
+            if (word[0] != '#'){
+                label.address = wordToInt(word, i);
+                label.defined = TRUE;
+            }
+            else{
+                label.defined = FALSE;
+            }
+        }
+        Insere(label, &module->symbolTable);
+        c = getc(file);
+    }
+    c = getc(file); /* reads \n */
+    c = getc(file);
+    /*printf("\n veio aqui -%c-", c);*/
+    if (c == '['){
+        i = 0;
+        c = getc (file);
+        while (c != ']' && !feof(file)){
+            word[i] = c;
+            i++;
+            c = getc(file);
+            if (i >= allocated){
+                allocated += 10;
+                word = (char *) realloc(word, allocated*sizeof(char));
+            }
+        }
+        if (c == ']'){
+            module->finalPC = wordToInt(word, i);
+            /*printf("3[%s %d]%d", word, i, module->finalPC);*/
+        }
+    }
+    fclose(file);
+    free(word);
+}
+

@@ -47,7 +47,9 @@ short ListaVazia (TipoLista lista);
 void Insere (TipoItem item, TipoLista *lista);
 void InsereOrdenado (TipoItem item, TipoLista *lista);
 void Retira (ApontadorL ap, TipoLista *lista, TipoItem *item);
+void IncrementaEnderecos (TipoLista *lista, int inc);
 void Imprime (TipoLista lista);
 void ImprimeEmArquivo (TipoLista lista, FILE **arq);
+
 
 #endif

@@ -31,10 +31,10 @@ void rearrangesTables (Linker *linker);
 void fillsTable (TipoLista *st, Linker linker);
 void fillsUndefinedLabels (Linker *linker);
 void write (Linker linker);
-void writeModule (Module module, FILE **file);
+void writeModule (Module module, FILE **out);
 
 short isEqual (char *str1, int str_size1, char *str2, int str_size2);
-void copyLabelName(Label *label, char *src, int size);
+Label copyLabelName(char *src, int size);
 int wordToInt(char *word, int wsize);
 int power(int n, int exponent);
 int atoiChar(char c);
