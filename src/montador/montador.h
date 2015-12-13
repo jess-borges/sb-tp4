@@ -57,17 +57,18 @@
 
 short searchLabel (char *string, int str_size, TipoLista st, int *address, Label *l);
 short defineLabel(char *string, int str_size, TipoLista *st, int address);
-short isUndefinedLabel(TranslatedInstructions code, TipoLista st, int pc);
-short writeUndefinedLabel (int address, TipoLista st, FILE **file);
+Label addUndefinedLabel(char *string, int str_size, TipoLista *st, TranslatedInstructions *code, int pc);
+short isUndefinedLabel(TranslatedInstructions code, int pc);
+void writeUndefinedLabel(TranslatedInstructions code, int pc, FILE **file);
 
 void translate(char *in_file, char *out_file, short verbose, short linker);
 void firstStep(char *in_file, TipoLista *st);
-void secondStep(char *in_file, char *out_file, TipoLista st, short verbose, short linker);
-int translatesWord(char *word, int wsize, TranslatedInstructions *code, TipoLista st, short expecting, int pc);
+void secondStep(char *in_file, char *out_file, TipoLista *st, short verbose, short linker);
+int translatesWord(char *word, int wsize, TranslatedInstructions *code, TipoLista *st, short expecting, int pc);
 short printCode(char *out_file, TranslatedInstructions code, short linker, TipoLista st);
 
 void StartISACode(TranslatedInstructions *code, int blockSize);
-void saveInListCode(TranslatedInstructions *code, int n);
+void saveInListCode(TranslatedInstructions *code, int n, short undefinedLabel, Label label);
 void ReallocISACode(TranslatedInstructions *code);
 void FreeISACode(TranslatedInstructions *code);
 

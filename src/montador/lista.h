@@ -35,7 +35,8 @@ typedef struct {
     int size;
     int allocated;
     int block_size;
-    int *undefinedLabels; /* Records the positions of undefined labels */
+    
+    Label *undefinedLabels; /* Records the positions of undefined labels */
     int ulsize; /* Size of undefinedLabels array */
     int ulallocated;
 }TranslatedInstructions;
