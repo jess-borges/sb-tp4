@@ -26,6 +26,7 @@ void Insere (TipoItem item, TipoLista *lista){
     lista->ultimo = lista->ultimo->prox;
     lista->ultimo->item = item;
     lista->ultimo->prox = NULL;
+    printf("{Insere %s %d %d}", item.name, item.address, item.defined);
 }
 
 /*

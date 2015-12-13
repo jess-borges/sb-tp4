@@ -4,7 +4,7 @@
 #include "montador.h"
 
 /* Symbol table operations */
-short searchLabel (char *string, int str_size, TipoLista st, int *address){
+short searchLabel (char *string, int str_size, TipoLista st, int *address, Label *l){
     Label label;
     ApontadorL ap = st.primeiro;
     if (ap == NULL){
@@ -15,6 +15,7 @@ short searchLabel (char *string, int str_size, TipoLista st, int *address){
         if (isEqual(string, str_size, label.name, label.name_size)){
             if (label.defined){
                 *address = label.address;
+                *l = label;
                 return TRUE;
             }
         }
@@ -58,6 +59,7 @@ void addUndefinedLabel(char *string, int str_size, TipoLista *st, TranslatedInst
     label.address = pc;
     Insere(label, st);
     code->undefinedLabels[code->ulsize] = pc;
+    int i;
     code->ulsize++;
     if (code->ulsize >= code->ulallocated){
         code->ulallocated += code->block_size;
@@ -223,6 +225,7 @@ void secondStep(char *in_file, char *out_file, TipoLista st, short verbose, shor
 
 int translatesWord(char *word, int wsize, TranslatedInstructions *code, TipoLista st, short expecting, int pc){
     int i, n;
+    Label label;
     i = 0;
     while ((i <= END) && (expecting == INSTRUCTION)){        
         if (isEqualInstr(word, wsize, i)){       
@@ -271,13 +274,19 @@ int translatesWord(char *word, int wsize, TranslatedInstructions *code, TipoList
         return expecting;
     }
     if (expecting == LABEL){
-        if (searchLabel(word, wsize, st, &n)){
-            n = n - pc - 1;
-            saveInListCode(code, n);
+        if (searchLabel(word, wsize, st, &n, &label)){
+            if (label.defined){
+                n = n - pc - 1;
+                saveInListCode(code, n);
+            }   
+            else{
+                saveInListCode(code, pc);
+            }         
             return INSTRUCTION;
         }
         else{
             addUndefinedLabel(word, wsize, &st, code, pc);
+            printf("\n{%s %d}", word, wsize);
             saveInListCode(code, pc);
             return INSTRUCTION;
         }
@@ -303,6 +312,11 @@ short printCode(char *out_file, TranslatedInstructions code, short linker, TipoL
         ImprimeEmArquivo(st, &file);
         fprintf(file, "[%d]\n", code.size);
     }
+    printf("\n Undefined Labels: ");
+    for (i = 0; i < code.ulsize; i++){
+        printf("%d ", code.undefinedLabels[i]);
+
+    }    
     for (i = 0; i < code.size; i++){
         if (code.list[i] == i){
             if (isUndefinedLabel(code, st, i)){

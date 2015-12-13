@@ -31,8 +31,10 @@ int main(int argc, char * argv[])
                 linker = TRUE;
             }
         }
-        if (argv[4][0] == '-' && (argv[4][1] == 'L' || argv[4][1] == 'l')){
-            linker = TRUE;
+        if (argc == 5){
+            if (argv[4][0] == '-' && (argv[4][1] == 'L' || argv[4][1] == 'l')){
+                linker = TRUE;
+            }
         }
     }
 

@@ -55,7 +55,7 @@
 #define VALUE 5
 #define ERROR -1
 
-short searchLabel (char *string, int str_size, TipoLista st, int *address);
+short searchLabel (char *string, int str_size, TipoLista st, int *address, Label *l);
 short defineLabel(char *string, int str_size, TipoLista *st, int address);
 short isUndefinedLabel(TranslatedInstructions code, TipoLista st, int pc);
 short writeUndefinedLabel (int address, TipoLista st, FILE **file);

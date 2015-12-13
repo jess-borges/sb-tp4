@@ -16,7 +16,7 @@ SRC_MONTADOR = main.c montador.c lista.c
 OBJS_MONTADOR = $(SRC_MONTADOR:%.c=build/montador/%.o)
 
 
-SRC_LIGADOR = main.c ligador.c lista.c
+SRC_LIGADOR = main.c ligador.c
 
 OBJS_LIGADOR = $(SRC_LIGADOR:%.c=build/ligador/%.o)
 

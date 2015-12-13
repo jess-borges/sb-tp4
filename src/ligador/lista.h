@@ -1,14 +1,12 @@
-#ifndef _H_LISTA
-#define _H_LISTA
-
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifndef _H_LISTA
+#define _H_LISTA
 
 #define FALSE 0
 #define TRUE 1
 
-typedef int TipoVertice;
-typedef int TipoPeso;
 
 typedef struct {
     char *name;
@@ -30,13 +28,20 @@ typedef struct{
     ApontadorL primeiro, ultimo;
 } TipoLista;
 
+
+
+
+/*
 typedef struct {
     int *list;
     int size;
     int allocated;
     int block_size;
+    int *undefinedLabels; / Records the positions of undefined labels /
+    int ulsize; / Size of undefinedLabels array /
+    int ulallocated;
 }TranslatedInstructions;
-
+*/
 void FLVazia (TipoLista *lista);
 short ListaVazia (TipoLista lista);
 void Insere (TipoItem item, TipoLista *lista);
