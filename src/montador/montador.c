@@ -23,6 +23,13 @@ short searchLabel (char *string, int str_size, TipoLista st, int *address){
     return FALSE;
 }
 
+void addUndefinedLabel(char *string, int str_size, TipoLista *st){
+    Label label;
+    copyLabelName(&label, string, str_size);
+    label.defined = FALSE;
+    Insere(label, st);
+}
+
 short defineLabel(char *string, int str_size, TipoLista *st, int address){
     Label label;
     ApontadorL ap = st->primeiro;
@@ -55,12 +62,12 @@ short defineLabel(char *string, int str_size, TipoLista *st, int address){
 void translate(char *in_file, char *out_file, short verbose, short linker){
     TipoLista symbol_table;
     
-    firstStep(in_file, &symbol_table);
+    firstStep(in_file, &symbol_table);    
+    secondStep(in_file, out_file, symbol_table, verbose, linker);
+    
     if (verbose){
         Imprime(symbol_table);
     }
-    secondStep(in_file, out_file, symbol_table, verbose, linker);
-    
 }
 
 void firstStep(char *in_file, TipoLista *st){
@@ -176,7 +183,7 @@ void secondStep(char *in_file, char *out_file, TipoLista st, short verbose, shor
             lastCharInWord = FALSE;
         }
     }
-    printCode(out_file, code);
+    printCode(out_file, code, linker, st);
     fclose(file);
 }
 
@@ -235,6 +242,12 @@ int translatesWord(char *word, int wsize, TranslatedInstructions *code, TipoList
             saveInListCode(code, n);
             return INSTRUCTION;
         }
+        else{
+            addUndefinedLabel(word, wsize, &st);
+            n = n - pc - 1;
+            saveInListCode(code, n);
+            return INSTRUCTION;
+        }
     }
     if (expecting == VALUE){
         n = wordToInt(word, wsize);
@@ -244,7 +257,7 @@ int translatesWord(char *word, int wsize, TranslatedInstructions *code, TipoList
     return ERROR;
 }
 
-short printCode(char *out_file, TranslatedInstructions code){
+short printCode(char *out_file, TranslatedInstructions code, short linker, TipoLista st){
     FILE *file;
     int i;
 
@@ -252,6 +265,9 @@ short printCode(char *out_file, TranslatedInstructions code){
     if (!file){
         printf("\nHouve um problema na abertura do arquivo");
         return 0;
+    }
+    if (linker){
+        ImprimeEmArquivo(st, &file);
     }
     for (i = 0; i < code.size; i++){
         fprintf(file, "%d\n", code.list[i]);

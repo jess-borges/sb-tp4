@@ -15,7 +15,7 @@ int main(int argc, char * argv[])
         4 - output type: -L if it's going to be used in a linker and nothing if it's not
     */
     if ((argc < 3) || (argc > 5)) {
-        printf("Numero de parametros errado. Yey!");
+        printf("Numero de parametros errado.");
         return -1;
     }
     input = argv[1];
@@ -29,12 +29,10 @@ int main(int argc, char * argv[])
         else{
             if (argv[3][0] == '-' && (argv[3][1] == 'L' || argv[3][1] == 'l')){
                 linker = TRUE;
-                printf("\nlinker");
             }
         }
         if (argv[4][0] == '-' && (argv[4][1] == 'L' || argv[4][1] == 'l')){
             linker = TRUE;
-            printf("\nlinker");
         }
     }
 

@@ -75,7 +75,7 @@ void Imprime (TipoLista lista){
         if (ap->item.defined)
             printf("%d", ap->item.address);
         else
-            printf("nao definido");
+            printf("not defined");
         ap = ap->prox;
     }
     printf("\n");
@@ -84,14 +84,14 @@ void Imprime (TipoLista lista){
 void ImprimeEmArquivo (TipoLista lista, FILE **arq){
     ApontadorL ap;
     ap = lista.primeiro->prox;
-    printf("\n****Tabela de simbolos****\n");
+    fprintf(*arq, "{");
     while (ap != NULL){
-        printf("\n%s: ", ap->item.name);
+        fprintf(*arq, "\n%s ", ap->item.name);
         if (ap->item.defined)
-            printf("%d", ap->item.address);
+            fprintf(*arq, "%d", ap->item.address);
         else
-            printf("nao definido");
+            fprintf(*arq, "#");
         ap = ap->prox;
     }
-    printf("\n");
+    fprintf(*arq, "\n}\n");
 }

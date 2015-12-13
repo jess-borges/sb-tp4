@@ -1,6 +1,9 @@
 #ifndef _H_LISTA
 #define _H_LISTA
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #define FALSE 0
 #define TRUE 1
 
@@ -40,5 +43,6 @@ void Insere (TipoItem item, TipoLista *lista);
 void InsereOrdenado (TipoItem item, TipoLista *lista);
 void Retira (ApontadorL ap, TipoLista *lista, TipoItem *item);
 void Imprime (TipoLista lista);
+void ImprimeEmArquivo (TipoLista lista, FILE **arq);
 
 #endif
