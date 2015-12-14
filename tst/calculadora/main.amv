@@ -1,0 +1,39 @@
+;Programa principal: recebe a, b e c
+; a indica a operação
+; b e c são os operandos
+
+READ R11 ;a
+READ R2  ;b
+READ R3  ;c
+
+LOAD R7 AD
+SUB R11 R7
+JZ SOMA
+
+ADD R11 R7
+LOAD R7 SU
+SUB R11 R7
+JZ SUBTRAI
+
+ADD R11 R7
+LOAD R7 MU
+SUB R11 R7
+JZ MULTIPLICA
+
+ADD R11 R7
+LOAD R7 DI
+SUB R11 R7
+JZ DIVIDE
+
+ADD R11 R7
+LOAD R7 PO
+SUB R11 R7
+JZ POTENCIA
+
+X: WORD 0
+Y: WORD 1
+AD: WORD 1
+SU: WORD 2
+MU: WORD 3
+DI: WORD 4
+PO: WORD 5

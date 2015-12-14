@@ -1,0 +1,6 @@
+;SOMA
+
+SOMA: ADD R2 R3
+WRITE R2
+
+HALT

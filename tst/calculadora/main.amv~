@@ -1,0 +1,15 @@
+;Programa principal: recebe a, b e c
+; a indica a operação
+; b e c são os operandos
+
+READ R11 ;a
+READ R2  ;b
+READ R3  ;c
+
+X: WORD 0
+Y: WORD 1
+AD: WORD 1
+SU: WORD 2
+MU: WORD 3
+DI: WORD 4
+PO: WORD 5
