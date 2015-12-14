@@ -30,24 +30,6 @@ void Insere (TipoItem item, TipoLista *lista){
 }
 
 /*
-void InsereOrdenado (TipoItem item, TipoLista *lista){
-	ApontadorL ap, apAnterior, novo;
-	apAnterior = lista->primeiro;
-	ap = apAnterior->prox;
-	while ((ap != NULL) && (ap->item.vertice < item.vertice)){
-		apAnterior = ap;
-		ap = ap->prox;
-	}
-	if (ap == NULL){
-		Insere (item, lista);
-		return;
-	}
-	novo = (ApontadorL) malloc(sizeof(CelulaLista));
-	apAnterior->prox = novo;
-	novo->prox = ap;	
-}
-*/
-/*
  * Retira a célula apontada por ap da lista e guarda seu conteúdo no item, cujo ponteiro é passado por parâmetro.
  */
 void Retira (ApontadorL ap, TipoLista *lista, TipoItem *item){
@@ -84,7 +66,6 @@ void Imprime (TipoLista lista){
     ap = lista.primeiro->prox;
     printf("\n****Tabela de simbolos****\n");
     while (ap != NULL){
-        /*printf("\n%s: ", ap->item.name);*/
         printf("\n");
         for (i = 0; i < ap->item.name_size; i++){
             printf("%c", ap->item.name[i]);
@@ -105,7 +86,6 @@ void ImprimeEmArquivo (TipoLista lista, FILE **arq){
     ap = lista.primeiro->prox;
     fprintf(*arq, "{");
     while (ap != NULL){
-        /*fprintf(*arq, "\n%s ", ap->item.name);*/
         fprintf(*arq, "\n");
         for (i = 0; i < ap->item.name_size; i++){
             fprintf(*arq, "%c", ap->item.name[i]);

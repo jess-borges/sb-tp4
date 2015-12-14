@@ -28,20 +28,6 @@ typedef struct{
     ApontadorL primeiro, ultimo;
 } TipoLista;
 
-
-
-
-/*
-typedef struct {
-    int *list;
-    int size;
-    int allocated;
-    int block_size;
-    int *undefinedLabels; / Records the positions of undefined labels /
-    int ulsize; / Size of undefinedLabels array /
-    int ulallocated;
-}TranslatedInstructions;
-*/
 void FLVazia (TipoLista *lista);
 short ListaVazia (TipoLista lista);
 void Insere (TipoItem item, TipoLista *lista);

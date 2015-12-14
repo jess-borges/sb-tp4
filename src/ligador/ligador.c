@@ -60,12 +60,8 @@ void readTables (Linker *linker){
     int i;
 
     readTable(&linker->main);
-    /*printf("\nPrograma principal\n");
-    Imprime (linker->main.symbolTable);*/
     for (i = 0; i < linker->size; i++){
         readTable(&linker->moduleList[i]);
-        /*printf("\nModulo %d\n", i+1);
-        Imprime (linker->moduleList[i].symbolTable);*/
     }
 }
 
@@ -106,10 +102,8 @@ void readTable (Module *module){
         }
         if (c == ' '){
             label.name_size = i;            
-            /*copyLabelName(&label, word, i);*/
             label.name = (char *) malloc((i+5)*sizeof(char));
             label.name = strncpy(label.name, word, i);
-            /*printf("1[%s %d]%s  ", word, i, label.name);*/
         }
         i = 0;
         c = getc(file);
@@ -123,17 +117,13 @@ void readTable (Module *module){
             }
         }
         if (c == '\n'){
-            /*printf("2[%s %d]", word, i);*/
             if (word[0] != '#'){
                 label.address = wordToInt(word, i);
-                /*printf("%d  ", label.address);*/
                 label.defined = TRUE;
             }
             else{
-                /*printf("  ");*/
                 label.defined = FALSE;
             }
-           /* c = getc(file);  Reads '\n' */
         }
         Insere(label, &module->symbolTable);
         c = getc(file);
@@ -154,7 +144,6 @@ void readTable (Module *module){
         }
         if (c == ']'){
             module->finalPC = wordToInt(word, i);
-            /*printf("3[%s %d]%d", word, i, module->finalPC);*/
         }
     }
     fclose(file);
@@ -274,10 +263,8 @@ Label copyLabelName(char *src, int size){
     int i;
     Label label;
     label.name = (char *) malloc(size*sizeof(char));
-    /*printf("\n%d{", size);*/
     for (i = 0; i < size; i++){
         label.name[i] = src[i];
-      /*  printf("%c", label->name[i]);*/
     }
     label.name_size = size;
 

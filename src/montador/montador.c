@@ -77,7 +77,6 @@ void writeUndefinedLabel(TranslatedInstructions code, int pc, FILE **file){
         fprintf(*file, "%c", code.undefinedLabels[pc].name[i]);
     }
     fprintf(*file, "\n");
-    /*fprintf(*file, "%s\n", code.undefinedLabels[pc].name);*/
 }
 
 /* Translation operations*/
