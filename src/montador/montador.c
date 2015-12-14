@@ -72,7 +72,12 @@ short isUndefinedLabel(TranslatedInstructions code, int pc){
     
 }
 void writeUndefinedLabel(TranslatedInstructions code, int pc, FILE **file){
-    fprintf(*file, "%s\n", code.undefinedLabels[pc].name);
+    int i;
+    for (i = 0; i < code.undefinedLabels[pc].name_size; i++){
+        fprintf(*file, "%c", code.undefinedLabels[pc].name[i]);
+    }
+    fprintf(*file, "\n");
+    /*fprintf(*file, "%s\n", code.undefinedLabels[pc].name);*/
 }
 
 /* Translation operations*/

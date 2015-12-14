@@ -11,9 +11,12 @@ void link (Linker linker){
     fillsUndefinedLabels(&linker);
     write(linker);
 
-    /*file = fopen("tabelas", "w");*/
+    /* Para gerar um qrquivo com as tabelas de símbolos 
+    de todos os módulos e do programa principal, descomente. 
+    */
+    /*file = fopen("tst/tabelas", "w");
 
-    /*printf("oi");*//*
+    
     ImprimeEmArquivo (linker.main.symbolTable, &file);
     for (i = 0; i < linker.size; i++){
         ImprimeEmArquivo (linker.moduleList[i].symbolTable, &file);
